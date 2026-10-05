@@ -1,0 +1,57 @@
+{
+ "layer": "32",
+ "conditions": {
+  "dont_reveal": {
+   "rel_strength": 1.0,
+   "acc": 84.09722222222223
+  },
+  "decoy": {
+   "rel_strength": 0.7203614328173206,
+   "acc": 83.125
+  },
+  "plan_self": {
+   "rel_strength": 0.20120877691670408,
+   "acc": 81.875
+  },
+  "plan_blind": {
+   "rel_strength": 0.08798682829612679,
+   "acc": 49.6875
+  },
+  "plan_brief": {
+   "rel_strength": 0.2868946094772068,
+   "acc": 54.6875
+  },
+  "filler_craft": {
+   "rel_strength": 0.7003101665588514,
+   "acc": 79.47916666666667
+  },
+  "filler_irrelevant": {
+   "rel_strength": 0.17933694899952743,
+   "acc": 55.833333333333336
+  },
+  "filler_craft_long": {
+   "rel_strength": 0.5165956651288801,
+   "acc": 75.10416666666667
+  },
+  "filler_irrelevant_plain": {
+   "rel_strength": 0.6076465495967653,
+   "acc": 78.33333333333333
+  }
+ },
+ "cond_pearson": [
+  0.7579020017929644,
+  0.017972410595311763
+ ],
+ "cond_spearman": [
+  0.7999999999999999,
+  0.009627924725379839
+ ],
+ "word_pearson": [
+  0.4980211646607459,
+  0.05885485421671767
+ ],
+ "word_spearman": [
+  0.43369454205325564,
+  0.10629460960220952
+ ]
+}

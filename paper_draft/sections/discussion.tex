@@ -1,0 +1,40 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\para{Does a plan stop the leak?}
+The answer depends on who wrote the plan.
+If the model wrote it while holding the secret, the plan is where the secret went, and the prose inherits it; this holds for a word and for a whole-story outline that already contains the twist.
+If the content was decided without the secret, the primary guesser and the text probe find no trace of the secret word in the prose, even though the model still holds the secret and represents it at every story position.
+For plot twists the same holds in direction, with weaker evidence.
+
+\para{Where does the leak happen?}
+Not in the wording of prose whose content is fixed, and not in a single early commitment.
+It happens wherever the model chooses content with the secret available: at outline time, and continuously through the body of a free story.
+The premise and swap conditions together make this point.
+A two-sentence premise that the model is told to write from stops the leak, while a fixed opening that the model merely continues does not.
+
+\para{Representation versus use.}
+The secret is linearly present at story positions in every condition, at full decodability in late layers.
+Its mean signature is small, tracks leakage across conditions, and has a modest, specific causal effect, while taking the secret out of the context removes the leak completely.
+The most economical reading is that the leak is driven by repeated reads of the secret from the prompt as content decisions come up, and that the mean residual signature is a partial summary of those reads.
+We did not test this reading directly.
+For monitoring, the consequence is that a probe which finds a secret in the activations says little about whether the output leaks it.
+
+\para{Practical implication.}
+To keep known information out of generated prose, decide the content before the model sees the secret, or in a separate context, and have the model write from that plan.
+Asking the model to plan for itself does not help.
+
+\para{Limitations.}
+\emph{Guesser.} The primary guesser is the writer model itself, not a frontier model.
+Its sensitivity is limited, clearly so for twists, so a chance-level result means ``not detectable by \gemma or by a linear probe on its activations''.
+The cross-checks are small (49 to 238 trials), their intervals ignore clustering by word, and for the blind outline they point in opposite directions.
+\emph{Scope.} We study one writer model and 15 words; word-level intervals are wide, and our conclusions rest mainly on paired differences across the same words.
+The decoy failure and the task-boundary effect may be specific to \gemma.
+\emph{Post hoc additions.} The order-cancelled metric, the 500-token craft filler, the neutral-request filler, the no-hide twist conditions and the swap experiment were added after seeing earlier results.
+The Holm families include them; the swap experiment is the least pre-specified.
+\emph{Length.} Outlines were cut at 500 tokens, stories written from outlines are longer (680 words against 524), and 47\% of blind-outline stories hit the 900-token cap.
+Longer stories give a guesser more to work with, so this works against the reduction we report.
+\emph{Twists.} We wrote the twist stimuli ourselves without human validation, and generated only openings.
+\emph{Interventions.} Projection ablation did not work without destroying fluency, so the causal evidence comes from mean-shift patching (small effect) and context removal (full effect).
+Neither isolates a specific component; we did not test attention from story positions to the secret tokens.
+Quality of intervened stories was rated by the writer model itself.

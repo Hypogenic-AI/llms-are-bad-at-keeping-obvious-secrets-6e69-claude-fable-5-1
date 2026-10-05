@@ -1,0 +1,62 @@
+{
+ "decoy": {
+  "prompt_tokens": 71.6,
+  "turn1_tokens": 0.0,
+  "story_tokens": 662.3,
+  "story_hit_cap_frac": 0.0
+ },
+ "dont_reveal": {
+  "prompt_tokens": 57.2,
+  "turn1_tokens": 0.0,
+  "story_tokens": 662.875,
+  "story_hit_cap_frac": 0.0
+ },
+ "filler_craft": {
+  "prompt_tokens": 425.60833333333335,
+  "turn1_tokens": 301.40833333333336,
+  "story_tokens": 683.8416666666667,
+  "story_hit_cap_frac": 0.0
+ },
+ "filler_craft_long": {
+  "prompt_tokens": 624.1333333333333,
+  "turn1_tokens": 499.93333333333334,
+  "story_tokens": 702.3083333333333,
+  "story_hit_cap_frac": 0.0
+ },
+ "filler_irrelevant": {
+  "prompt_tokens": 403.35,
+  "turn1_tokens": 302.15,
+  "story_tokens": 670.6583333333333,
+  "story_hit_cap_frac": 0.0
+ },
+ "filler_irrelevant_plain": {
+  "prompt_tokens": 396.35,
+  "turn1_tokens": 302.15,
+  "story_tokens": 663.8083333333333,
+  "story_hit_cap_frac": 0.0
+ },
+ "no_secret": {
+  "prompt_tokens": 34.0,
+  "turn1_tokens": 0.0,
+  "story_tokens": 800.5083333333333,
+  "story_hit_cap_frac": 0.03333333333333333
+ },
+ "plan_blind": {
+  "prompt_tokens": 621.15,
+  "turn1_tokens": 499.95,
+  "story_tokens": 871.2083333333334,
+  "story_hit_cap_frac": 0.4666666666666667
+ },
+ "plan_brief": {
+  "prompt_tokens": 153.84166666666667,
+  "turn1_tokens": 51.641666666666666,
+  "story_tokens": 829.8333333333334,
+  "story_hit_cap_frac": 0.175
+ },
+ "plan_self": {
+  "prompt_tokens": 620.7083333333334,
+  "turn1_tokens": 499.5083333333333,
+  "story_tokens": 804.5583333333333,
+  "story_hit_cap_frac": 0.175
+ }
+}

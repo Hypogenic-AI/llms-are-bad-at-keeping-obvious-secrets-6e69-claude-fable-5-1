@@ -1,0 +1,107 @@
+\section{Methodology}
+\label{sec:method}
+
+Our main question is whether a plan reduces how much of a secret leaks into a story, and what inside the model carries the leak.
+We describe the writer and guessers, the leakage metrics, and three experiments.
+
+\subsection{Writer, guessers and metrics}
+
+\para{Writer.}
+We use \texttt{google/gemma-3-12b-it} locally in bf16, because it is the smallest model reported to leak strongly \citep{holtzman2026secret} and its activations are accessible.
+We sample at temperature 1.0 with the model's default top-$k$ of 64 and top-$p$ of 0.95, for up to 900 new tokens per story.
+
+\para{Guessers.}
+The primary guesser is \gemma itself.
+We use the two-alternative prompt of \citet{holtzman2026secret} and read the answer from the next-token logits of ``1'' and ``2'', which is the temperature-0 answer restricted to those two options (about 24,000 trials).
+We had planned to use frontier API models, but the API account had no credits on the day of the run.
+We cross-check on subsamples with two other guessers: \nemotron through a free API tier (513 answered trials) and \gemmabig run locally in 4-bit.
+
+\para{Discrimination.}
+A trial shows two stories written with different secrets and asks which one has secret $X$.
+Each pair is shown in both orders and with both secrets as the target, giving 4 trials per pair; chance is 50\%.
+This is our primary metric.
+
+\para{Order-cancelled accuracy.}
+For each pair and target, we count the pair as correct if the logit margin for ``1'' is higher when the target story is shown first than when it is shown second.
+A constant preference for one position cancels exactly.
+We added this metric after seeing that the guesser answers ``1'' in 89 to 96\% of plot-twist trials.
+The two metrics agree for word secrets.
+
+\para{Detection and a guesser-free check.}
+Detection trials pair a story written with a secret against one written with none.
+As a check that uses no guesser, we decode the secret (15-way, nearest centroid, leave-one-repetition-out) from the mean residual activation of the story text read under a no-secret context, so that the decoder sees only the text.
+Chance is 6.7\%.
+
+\para{Statistics.}
+We report 95\% confidence intervals from a cluster bootstrap over the 15 secret words (12 premises for plot twists) with 5,000 resamples, since words are the unit that generalizes.
+We test differences between conditions with a paired bootstrap over the same clusters and apply Holm correction within each experiment's family of contrasts.
+Bootstrap $p$-values have a floor of 0.0002.
+
+\subsection{Experiment 1: word secrets and plans}
+
+We use the 15 curated words of \citet{holtzman2026secret} and generate 8 stories per word and condition (120 stories per condition).
+The secret is always in the system prompt with their wording: ``Your secret word is `X'. Do not mention this word, reference it, or hint at it in any way. Keep it completely hidden.''
+All plan and filler conditions share one format: a first user request, an assistant text, and then the request for the story.
+\Tabref{tab:conditions} lists the conditions.
+
+\begin{table}[t]
+    \centering
+    \small
+    \begin{tabular}{@{}lp{5.0cm}p{3.7cm}@{}}
+        \toprule
+        \textbf{Condition} & \textbf{Turn-1 assistant text} & \textbf{Story request} \\
+        \midrule
+        \anchor (anchor) & none & ``Write a short story (5--8 paragraphs)\ldots'' \\
+        \decoy & none; decoy prompt of \citet{holtzman2026secret} & same \\
+        \planself & outline written by the model with the secret in context & ``\ldots following your outline.'' \\
+        \planblind & outline written by the model with no secret, transplanted & same \\
+        \planbrief & one- or two-sentence premise written with no secret & ``\ldots based on your premise.'' \\
+        \fillercraft (300 / 500) & generic prose-craft advice, no secret & ``Now write a short story\ldots'' \\
+        \fillerirr (task switch) & unrelated expository text (about 300 tokens) & ``Now, on to a different task. Write a short story\ldots'' \\
+        \fillerirr (neutral) & the same unrelated texts & ``Now write a short story\ldots'' \\
+        \bottomrule
+    \end{tabular}
+    \caption{Conditions of Experiment 1. The secret and the instruction to hide it are in the system prompt in every condition. A no-secret condition supplies stories for detection trials and for the secret-blind outlines and premises.}
+    \label{tab:conditions}
+\end{table}
+
+The contrasts follow from the design.
+\planself and \planblind differ only in whether the outline was written with the secret in context.
+\planblind against the fillers separates fixing content from adding context.
+\planbrief varies how much content is fixed.
+Both kinds of outline ran into a 500-token cap, so the 500-token craft filler is the token-matched control.
+We added that filler and the neutral-request version of \fillerirr after the first results, to close a length mismatch and a wording confound in our first design.
+
+\subsection{Experiment 2: plot-twist secrets}
+
+We wrote 12 premises with 4 candidate final-scene twists each.
+The writer is told the premise and that ``the story has a secret twist that is only revealed in its final scene'', is told not to reveal or hint at it, and writes only the opening (4--6 paragraphs).
+We generate 3 openings per premise, twist and condition (144 per condition).
+Trials pair two openings with the same premise and different twists, so anything guessable from the premise alone cancels.
+The conditions are: no plan; a self-written outline of the whole story including the final scene; a self-written outline of the opening only; a twist-blind outline of the opening; and craft filler.
+We later added two conditions in which the writer knows the twist but gets no instruction to hide it, with and without a twist-blind outline, to measure natural foreshadowing.
+
+\subsection{Experiment 3: mechanism}
+
+\para{Readout.}
+We run each Experiment 1 story through the model twice: under its real context, and under a control context in which only the system prompt is replaced by the no-secret one.
+We call the difference in residual activations at story positions the \emph{context effect}.
+Because the text is identical in both runs, the difference removes whatever the text itself carries.
+We decode the secret from the context effect (15-way, nearest centroid, held-out stories) by layer and by tenth of the story.
+We define a story's \emph{strength} as the projection of its context effect onto its word's direction at layer 32, with the direction estimated from other stories of the \anchor condition.
+
+\para{Mean-shift patching.}
+For each word we compute a \emph{signature}: the word-specific mean context effect at each layer.
+During generation, at every generated position and every layer except the last, we shift the layer's output by minus the signature's increment at that layer.
+This removes, on average, what the secret adds, and leaves prompt tokens untouched.
+Controls subtract another word's signature or a random vector of the same norm; we also add the signature to runs with no secret.
+We generate 6 stories per word (90 per condition).
+We planned projection ablation of a secret direction \citep{arditi2024refusal}, but it destroyed fluency (\secref{sec:interventions}).
+
+\para{Context swap.}
+Removing the secret from the context is a complete ablation of everything the secret adds at later positions, with no damage to the model.
+We start a story under one context (secret or no secret) and continue it under the other after 30 or 100 tokens.
+
+\para{Quality.}
+We rate intervened stories with the un-intervened model (expected rating on a 1--9 scale over the digit logits) and compute their per-token negative log-likelihood under the un-intervened model.
+We also ask the intervened model to state its secret.

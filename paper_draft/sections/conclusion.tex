@@ -1,0 +1,14 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+A model holding a secret leaks it into the content decisions it makes, whenever it makes them.
+Handing \gemma a plan helps only when the plan was made without the secret: leakage of a secret word into the prose then drops from 84.1\% to about chance, while the secret remains fully decodable inside the model.
+A plan the model writes for itself absorbs the leak and passes it on.
+Context that fixes no content changes little, and the leak needs the secret to stay in context while the body of the story is written.
+For plot twists the direction is the same and the evidence weaker.
+
+Several follow-ups would strengthen these findings.
+The saved stories should be re-judged with frontier guessers and with humans, especially in the blind-outline and twist conditions.
+Masking attention from story positions to the secret tokens, layer by layer, would locate the reads that the swap experiment says are necessary.
+The twist experiment should be run on whole stories with a larger writer.
+Finally, our results suggest a two-context recipe that we did not test end to end: plan in a context without the secret, then write in one with it.

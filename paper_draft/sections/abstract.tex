@@ -1,0 +1,12 @@
+Language models that are told a secret and asked not to reveal it still leak it into the stories they write.
+Would an explicit plan relieve the leak?
+We run a white-box study of \gemma: the model writes stories while holding a secret word, a guesser decides which of two stories was written with a given secret (chance is 50\%), and we read and edit the residual stream while the model writes.
+A plan removes the leak only if its content was fixed without knowledge of the secret.
+With no plan the guesser is right 84.1\% of the time.
+An outline that the same model wrote without the secret brings this to 49.7\%, and a one- or two-sentence secret-blind premise to 54.7\%.
+An outline the model writes while holding the secret leaks by itself (83.8\%) and passes the leak on to the story (81.9\%).
+Token-matched context that fixes no content leaves leakage at 75.1\%.
+Inside the model, the secret is decodable at story positions with 97 to 100\% accuracy (15-way) in every condition, including the one with no behavioral leak, so representing a secret is not the same as leaking it.
+Removing the secret from the context after 30 story tokens abolishes the leak (52.2\%), while withholding it for the first 100 tokens does not (77.5\%): the leak is produced continuously as content is chosen.
+Results for plot twists point the same way with weaker evidence.
+To keep known information out of generated prose, decide the content before the model sees the secret.

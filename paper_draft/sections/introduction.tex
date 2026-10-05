@@ -1,0 +1,44 @@
+\section{Introduction}
+\label{sec:intro}
+
+Tell a language model a secret word, ask it to keep the word completely hidden, and then ask it for a short story.
+The word itself almost never appears, yet a reader who sees two such stories can usually say which one was written with which secret: a model holding ``invoice'' writes about a baker's ledger, and a model holding ``cactus'' gives its lighthouse keeper a small garden.
+\citet{holtzman2026secret} measured this effect in several frontier models and found two-alternative discrimination accuracies of 64 to 79\%, and 83\% for \gemma.
+
+This matters wherever a model is meant to know something that its output should not show.
+A model that knows a plot twist foreshadows it, a model with confidential instructions colors its answers with them, and games or agents that depend on hidden state become unreliable.
+
+{\bf Why does the secret leak, and would a plan stop it?}
+One appealing account is that models foreshadow because planning and prose generation are entangled: the model ``can't help but hint at what it knows is coming''.
+If so, a model that can rely on an explicit plan might stop hinting.
+Existing work does not answer this.
+\citet{holtzman2026secret} vary the instruction, the task, the placement of the secret and a decoy word, but not planning, and they use API models, so they could not look inside.
+Work on eliciting secret knowledge reads out secrets that were fine-tuned into a model that hints on purpose \citep{cywinski2025taboo,cywinski2025eliciting}; nobody has measured, or intervened on, an in-context secret while the model writes an unrelated story.
+A plan experiment also has an obvious confound: a plan adds length as well as content, and a longer, richer prompt alone might mask the secret.
+
+We run a white-box study on \gemma with three parts.
+First, we compare stories written with no plan, from an outline the model wrote while holding the secret, from an outline the same model wrote without the secret, from a one- or two-sentence secret-blind premise, and after token-matched filler text that fixes no story content (\secref{sec:method}).
+Second, we extend the design from secret words to plot twists that the writer knows are coming.
+Third, we read the secret out of the residual stream at story positions, relate its strength to leakage, and intervene on it during generation.
+
+{\bf A plan helps only if it was made without the secret.}
+With no plan, a guesser identifies the story written with a given secret 84.1\% of the time, which replicates the 83\% of \citet{holtzman2026secret}.
+A secret-blind outline brings this to 49.7\%, which is chance, and a 52-token secret-blind premise to 54.7\% (\figref{fig:exp1}).
+An outline that the model writes while holding the secret can itself be told apart at 83.8\%, and stories written from it leak at 81.9\%.
+Token-matched craft advice leaves leakage at 75.1\%, so the outline works because it fixes content, not because it adds context.
+
+{\bf The secret is represented whether or not it leaks.}
+The secret is decodable from the residual stream at story positions with 97 to 100\% accuracy (15-way, final layers) in all nine conditions, including the blind-outline condition in which the guesser is at chance.
+Removing the secret from the context after the first 30 story tokens abolishes the leak (52.2\%), while withholding it for the first 30 or 100 tokens and then restoring it gives the full leak (80.6\% and 77.5\%).
+The leak is therefore produced continuously, as the model chooses content with the secret available, and is not committed in the opening.
+Subtracting the secret's mean residual signature lowers leakage by only 5 to 10 points.
+
+In summary, our contributions are:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item We test plan conditioning as a mitigation for secret leakage, with controls that separate ``the plan fixes content'' from ``the plan is more context'' and ``the plan saw the secret'' from ``the plan did not''.
+    \item We show that a secret-blind plan brings word leakage to chance (49.7\% against 84.1\%), while a self-written plan absorbs the leak and passes it on (81.9\%).
+    \item We show that the secret stays linearly decodable at story positions in every condition, so representation does not imply leakage, and that the leak needs the secret in context continuously during the body of the story.
+    \item We extend the paradigm to plot twists, where three guessers and two instruction regimes point in the same direction, with weaker evidence.
+\end{itemize}
+
+We review related work in \secref{sec:related}, describe the setup in \secref{sec:method}, report results in \secref{sec:results}, and discuss implications and limitations in \secref{sec:discussion}.

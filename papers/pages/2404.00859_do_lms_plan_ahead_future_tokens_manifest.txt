@@ -1,0 +1,13 @@
+PDF: papers/2404.00859_do_lms_plan_ahead_future_tokens.pdf
+Total pages: 24
+Pages per chunk: 3
+
+Chunks:
+  2404.00859_do_lms_plan_ahead_future_tokens_chunk_001.pdf: pages 1-3
+  2404.00859_do_lms_plan_ahead_future_tokens_chunk_002.pdf: pages 4-6
+  2404.00859_do_lms_plan_ahead_future_tokens_chunk_003.pdf: pages 7-9
+  2404.00859_do_lms_plan_ahead_future_tokens_chunk_004.pdf: pages 10-12
+  2404.00859_do_lms_plan_ahead_future_tokens_chunk_005.pdf: pages 13-15
+  2404.00859_do_lms_plan_ahead_future_tokens_chunk_006.pdf: pages 16-18
+  2404.00859_do_lms_plan_ahead_future_tokens_chunk_007.pdf: pages 19-21
+  2404.00859_do_lms_plan_ahead_future_tokens_chunk_008.pdf: pages 22-24

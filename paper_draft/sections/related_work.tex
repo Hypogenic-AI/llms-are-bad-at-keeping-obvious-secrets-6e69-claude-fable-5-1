@@ -1,0 +1,32 @@
+\section{Related Work}
+\label{sec:related}
+
+\para{Leakage of in-context information.}
+\citet{holtzman2026secret} introduce the writer--guesser paradigm that we extend: a model holding a secret word writes a story, and a guesser must tell which of two stories had which secret.
+Five of seven frontier models leak at 64 to 79\%, the literal word does not appear, and an ``actively hide'' instruction pushes most models below chance because the avoidance is itself detectable.
+This is the suppressed version of semantic leakage, in which irrelevant prompt content biases generations \citep{gonen2025semantic}.
+Related failures appear in contextual privacy, where chain-of-thought reasoning did not reduce leakage \citep{mireshghallah2024confaide}, in social deduction games \citep{karabag2025chameleon}, and in ``avoid entity X'' instructions \citep{castricato2024pink}.
+\citet{mann2025whitebear} show that a negated concept rebounds, most strongly after semantically related distractor text.
+Unlike these studies, we vary whether the model has a plan and who wrote it, and we look inside the model while it writes.
+
+\para{Hidden state versus externalized state.}
+\citet{baldelli2026hangman} argue that an agent restricted to the public transcript cannot both keep a self-chosen secret and stay consistent with it; a forced private memory raises self-consistency from 2--12\% to 76--100\%.
+\citet{luo2026beliefs} find that a target held only implicitly drifts across turns.
+These results suggest that externalized state changes how a model handles a secret.
+We ask a different question: whether an externalized plan keeps a secret out of the prose.
+
+\para{Planning in hidden states.}
+Hidden states carry information about future tokens and whole responses \citep{pal2023futurelens,dong2025planning,pochinkov2024paragraphs}.
+\citet{wu2024plan} distinguish pre-caching, where the model computes features now that help only later, from breadcrumbs, where features useful now happen to help later.
+This distinction frames our outcomes: if leakage were a by-product of the model planning ahead, an external plan could relieve it regardless of who wrote it.
+Our results fit a simpler picture in which the secret colors every content choice made while it is in context.
+
+\para{Reading and editing secrets in activations.}
+\citet{cywinski2025taboo,cywinski2025eliciting} recover a fine-tuned-in secret word with the logit lens and sparse autoencoder features while the model hints at it on purpose.
+Neither study ablates the secret.
+Difference-of-means directions, directional ablation and activation addition can remove or induce behaviors such as refusal \citep{arditi2024refusal,turner2023activation,panickssery2023caa,belrose2023leace}.
+Building on these methods, we read an in-context secret at every position of an unrelated story against a text-matched control, and we test whether removing it removes the leak.
+
+\para{Plan-then-write story generation.}
+Outlines improve the coherence and suspense of generated stories \citep{yao2019plan,yang2022re3,yang2023doc,xie2024suspense}, and LLM stories still lack tension relative to human ones \citep{tian2024narratives}.
+None of this work measures whether withheld information leaks into the prose.
